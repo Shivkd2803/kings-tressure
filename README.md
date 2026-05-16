@@ -27,25 +27,26 @@ A cinematic two-player pirate treasure hunting game built with **HTML, CSS, and 
 
 ## Splash Screen
 
-![Splash Screen](screenshots/splash-screen.png)
+![Splash Screen](https://github.com/Shivkd2803/kings-tressure/blob/main/screenshots/splash.jpg))
 
 ---
 
 ## Crew Setup Screen
 
-![Crew Setup](screenshots/setup-screen.png)
+![Crew Setup](https://github.com/Shivkd2803/kings-tressure/blob/main/screenshots/crew-setup.jpg)
 
 ---
 
 ## Main Gameplay
 
-![Gameplay](screenshots/gameplay.png)
+![Gameplay](https://github.com/Shivkd2803/kings-tressure/blob/main/screenshots/gameplay.jpg)
+![Gameplay](https://github.com/Shivkd2803/kings-tressure/blob/main/screenshots/potrait%20mode.jpg)
 
 ---
 
 ## Winner Modal
 
-![Winner Modal](screenshots/winner-modal.png)
+![Winner Modal](https://github.com/Shivkd2803/kings-tressure/blob/main/screenshots/winner.jpg)
 
 ---
 
