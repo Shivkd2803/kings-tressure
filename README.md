@@ -42,13 +42,13 @@ A cinematic two-player pirate treasure hunting game built with **HTML, CSS, and 
 
 <tr>
 <td align="center">
-<img src="screenshots/gameplay.png" width="220"/>
+<img src="screenshots/gameplay.jpg" width="220"/>
 <br/>
 <b>Main Gameplay</b>
 </td>
 
 <td align="center">
-<img src="screenshots/winner-modal.png" width="220"/>
+<img src="screenshots/winner.jpg" width="220"/>
 <br/>
 <b>Winner Modal</b>
 </td>
