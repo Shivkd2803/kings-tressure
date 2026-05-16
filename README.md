@@ -199,6 +199,3 @@ If you liked this project:
 
 ---
 
-# 🏆 Final Preview
-
-![Final Preview](screenshots/final-preview.png)
