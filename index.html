@@ -37,8 +37,14 @@
 
           <div class="sec-block">
             <div class="sec-label">⚓ Pirate Names</div>
-            <input class="p-input i1" id="p1-name" value="Captain Blue" maxlength="14" placeholder="🔵 Player 1" />
-            <input class="p-input i2" id="p2-name" value="Captain Red" maxlength="14" placeholder="🔴 Player 2" />
+            <div class="player-input-row">
+              <img src="player_1.jpg" class="lobby-av p1-av" alt="Player 1" />
+              <input class="p-input i1" id="p1-name" value="Captain Blue" maxlength="14" placeholder="🔵 Player 1" />
+            </div>
+            <div class="player-input-row" style="margin-top:8px">
+              <img src="player_2.jpg" class="lobby-av p2-av" alt="Player 2" />
+              <input class="p-input i2" id="p2-name" value="Captain Red" maxlength="14" placeholder="🔴 Player 2" />
+            </div>
           </div>
 
           <div class="divider"></div>
@@ -94,7 +100,7 @@
       <div class="players-row">
         <div class="pcard p1 active" id="p1-card">
           <div class="av-wrap">
-            <div class="av" id="p1-av">🧑‍💼</div>
+            <div class="av" id="p1-av"><img src="player_1.jpg" alt="Player 1" /></div>
             <div class="streak-bdg" id="p1-stk" style="display:none"></div>
           </div>
           <div class="pinfo">
@@ -106,7 +112,7 @@
         <div class="vs-circle">VS</div>
         <div class="pcard p2" id="p2-card">
           <div class="av-wrap">
-            <div class="av" id="p2-av">🧑‍🚀</div>
+            <div class="av" id="p2-av"><img src="player_2.jpg" alt="Player 2" /></div>
             <div class="streak-bdg" id="p2-stk" style="display:none"></div>
           </div>
           <div class="pinfo right">
@@ -214,12 +220,6 @@
       <button class="btn-lv" id="btn-lv">🚢 Leave Ship</button>
     </div>
   </div>
-  <script>
-    document.getElementById("splash-continue-btn").addEventListener("click", () => {
-      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-      document.getElementById("lobby-screen").classList.add("active");
-    });
-  </script>
   <script src="script.js"></script>
 </body>
 
