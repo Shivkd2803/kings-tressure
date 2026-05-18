@@ -28,6 +28,33 @@
 
     <!-- ═══════ LOBBY ═══════ -->
     <div class="screen" id="lobby-screen">
+
+      <!-- Lobby top-right settings button (mirrors game screen) -->
+      <button class="icon-btn lobby-icon-settings-btn" id="lobby-settings-btn" style="display:none">⚙️</button>
+      <div id="lobby-settings-panel">
+        <div class="settings-title">⚙️ Settings</div>
+        <!-- Pirate Tune toggle -->
+        <div class="toggle-row" id="tune-toggle">
+          <div>
+            <div class="toggle-lbl">🎵 Pirate Tune</div>
+            <div class="toggle-desc">Background music</div>
+          </div>
+          <div class="t-track on" id="tune-track">
+            <div class="t-knob"></div>
+          </div>
+        </div>
+        <div class="settings-divider"></div>
+        <!-- Game Volume toggle -->
+        <div class="toggle-row" id="vol-toggle">
+          <div>
+            <div class="toggle-lbl">🔊 Game Volume</div>
+            <div class="toggle-desc">Sound effects</div>
+          </div>
+          <div class="t-track on" id="vol-track">
+            <div class="t-knob"></div>
+          </div>
+        </div>
+      </div>
       <div class="lobby-center">
         <div class="setup-col">
           <div style="text-align:center">
@@ -88,7 +115,35 @@
           <div class="g-title-top">✦ &nbsp; FIND THE &nbsp; ✦</div>
           <div class="g-title-main">TREASURE PIRATE 🏴‍☠️</div>
         </div>
-        <button class="icon-btn" id="mute-btn">🔊</button>
+        <button class="icon-btn" id="settings-btn">⚙️</button>
+      </div>
+
+      <!-- Settings Panel -->
+      <div id="settings-panel">
+        <div class="settings-title">⚙️ Settings</div>
+        <!-- Pirate Tune toggle -->
+        <div class="toggle-row" id="game-tune-toggle">
+          <div>
+            <div class="toggle-lbl">🎵 Pirate Tune</div>
+            <div class="toggle-desc">Background music</div>
+          </div>
+          <div class="t-track on" id="game-tune-track">
+            <div class="t-knob"></div>
+          </div>
+        </div>
+        <div class="settings-divider"></div>
+        <!-- Game Volume toggle -->
+        <div class="toggle-row" id="game-vol-toggle">
+          <div>
+            <div class="toggle-lbl">🔊 Game Volume</div>
+            <div class="toggle-desc">Sound effects</div>
+          </div>
+          <div class="t-track on" id="game-vol-track">
+            <div class="t-knob"></div>
+          </div>
+        </div>
+        <div class="settings-divider"></div>
+        <button class="settings-item settings-close-btn" id="settings-close-btn">✕ Close</button>
       </div>
 
       <!-- Timer -->
