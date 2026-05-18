@@ -367,6 +367,35 @@ body::before {
     padding: 16px
 }
 
+.player-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.player-input-row .p-input {
+    flex: 1;
+    margin-bottom: 0 !important;
+}
+
+.lobby-av {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.lobby-av.p1-av {
+    border: 2px solid rgba(59, 130, 246, .7);
+    box-shadow: 0 0 10px rgba(59, 130, 246, .35);
+}
+
+.lobby-av.p2-av {
+    border: 2px solid rgba(239, 68, 68, .7);
+    box-shadow: 0 0 10px rgba(239, 68, 68, .35);
+}
+
 .p-input {
     width: 100%;
     background: rgba(255, 255, 255, .06);
@@ -387,7 +416,6 @@ body::before {
 
 .p-input.i1 {
     border-left: 3px solid rgba(59, 130, 246, .7);
-    margin-bottom: 8px
 }
 
 .p-input.i2 {
@@ -591,7 +619,7 @@ body::before {
 
 .pcard {
     border-radius: 16px;
-    padding: 12px 16px;
+    padding: 14px 18px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -608,7 +636,7 @@ body::before {
 }
 
 .pcard.p2 {
-    flex-direction: row-reverse
+    flex-direction: row
 }
 
 .pcard.p1.active {
@@ -629,14 +657,23 @@ body::before {
 }
 
 .av {
-    width: 50px;
-    height: 50px;
+    width: 62px;
+    height: 62px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 26px;
-    border: 2px solid rgba(255, 255, 255, .15)
+    border: 2px solid rgba(255, 255, 255, .15);
+    overflow: hidden;
+}
+
+.av img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
 }
 
 .p1 .av {
@@ -674,7 +711,7 @@ body::before {
 }
 
 .pinfo.right {
-    text-align: right
+    text-align: left
 }
 
 .pname {
@@ -1396,11 +1433,16 @@ body::before {
         padding: 8px 10px;
         gap: 8px;
         border-radius: 12px;
+        flex-direction: row !important;
+    }
+
+    .pinfo.right {
+        text-align: left !important;
     }
 
     .av {
-        width: 36px;
-        height: 36px;
+        width: 44px;
+        height: 44px;
         font-size: 18px;
     }
 
