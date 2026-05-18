@@ -19,6 +19,132 @@ const getAudio = () => {
     return audioCtx;
 };
 
+// ─── Splash Pirate Tune ───
+let splashTuneNodes = [];
+let splashTuneTimeout = null;
+let splashTunePlaying = false;
+
+const PIRATE_MELODY = [
+    // freq, duration (s) — sea shanty-style melody
+    [392, 0.3], [392, 0.15], [440, 0.3], [392, 0.3], [349, 0.3], [392, 0.6],
+    [330, 0.3], [330, 0.15], [370, 0.3], [330, 0.3], [294, 0.3], [330, 0.6],
+    [392, 0.3], [440, 0.3], [494, 0.3], [523, 0.6], [494, 0.3], [440, 0.3],
+    [392, 0.3], [349, 0.3], [330, 0.3], [294, 0.45], [262, 0.15], [294, 0.3],
+    [330, 0.3], [349, 0.3], [392, 0.6], [440, 0.3], [392, 0.3],
+    [349, 0.3], [330, 0.3], [294, 0.3], [262, 0.9],
+];
+
+const playPirateTune = () => {
+    if (muted || splashTunePlaying) return;
+    splashTunePlaying = true;
+    const ctx = getAudio();
+
+    const playLoop = () => {
+        if (!splashTunePlaying) return;
+        let t = ctx.currentTime + 0.05;
+        splashTuneNodes = [];
+
+        PIRATE_MELODY.forEach(([freq, dur]) => {
+            // Main melody oscillator
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.connect(g); g.connect(ctx.destination);
+            o.type = "triangle";
+            o.frequency.setValueAtTime(freq, t);
+            g.gain.setValueAtTime(0, t);
+            g.gain.linearRampToValueAtTime(0.18, t + 0.02);
+            g.gain.setValueAtTime(0.18, t + dur - 0.06);
+            g.gain.linearRampToValueAtTime(0, t + dur);
+            o.start(t); o.stop(t + dur);
+            splashTuneNodes.push(o);
+
+            // Harmony (a fifth below)
+            const o2 = ctx.createOscillator();
+            const g2 = ctx.createGain();
+            o2.connect(g2); g2.connect(ctx.destination);
+            o2.type = "sine";
+            o2.frequency.setValueAtTime(freq * 0.667, t);
+            g2.gain.setValueAtTime(0.06, t);
+            g2.gain.linearRampToValueAtTime(0, t + dur);
+            o2.start(t); o2.stop(t + dur);
+            splashTuneNodes.push(o2);
+
+            t += dur;
+        });
+
+        const totalDur = PIRATE_MELODY.reduce((s, [, d]) => s + d, 0);
+        splashTuneTimeout = setTimeout(() => {
+            if (splashTunePlaying) playLoop();
+        }, (totalDur + 0.2) * 1000);
+    };
+
+    playLoop();
+};
+
+const stopPirateTune = () => {
+    splashTunePlaying = false;
+    clearTimeout(splashTuneTimeout);
+    splashTuneNodes.forEach(o => { try { o.stop(); } catch (_) {} });
+    splashTuneNodes = [];
+};
+
+// ── Autoplay unlock: attempt immediately, retry on ANY interaction ──
+let tuneStarted = false;
+
+const tryStartTune = () => {
+    if (tuneStarted) return;
+    try {
+        const ctx = getAudio();
+        // Force resume (needed after page reload)
+        ctx.resume().then(() => {
+            if (!tuneStarted) {
+                tuneStarted = true;
+                playPirateTune();
+            }
+        }).catch(() => {});
+    } catch (_) {}
+};
+
+// Attempt on load
+tryStartTune();
+
+// Retry on any user gesture anywhere on the page
+const unlockHandler = () => {
+    tryStartTune();
+    if (tuneStarted) {
+        document.removeEventListener("pointerdown", unlockHandler, true);
+        document.removeEventListener("touchstart",  unlockHandler, true);
+        document.removeEventListener("keydown",     unlockHandler, true);
+        document.removeEventListener("click",       unlockHandler, true);
+    }
+};
+document.addEventListener("pointerdown", unlockHandler, true);
+document.addEventListener("touchstart",  unlockHandler, true);
+document.addEventListener("keydown",     unlockHandler, true);
+document.addEventListener("click",       unlockHandler, true);
+
+// Also restart tune any time splash screen becomes active
+const splashEl = document.getElementById("splash-screen");
+new MutationObserver(() => {
+    if (splashEl.classList.contains("active")) {
+        stopPirateTune();
+        tuneStarted = false;
+        tryStartTune();
+        // re-attach unlock in case audio context got suspended again
+        document.addEventListener("pointerdown", unlockHandler, true);
+        document.addEventListener("touchstart",  unlockHandler, true);
+        document.addEventListener("click",       unlockHandler, true);
+    }
+}).observe(splashEl, { attributes: true, attributeFilter: ["class"] });
+
+// Stop tune + go to lobby on Continue
+document.getElementById("splash-continue-btn").addEventListener("click", () => {
+    stopPirateTune();
+    tuneStarted = false;
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById("lobby-screen").classList.add("active");
+});
+
 // Lookup table: type → [freq, waveform, gain, duration]
 const SOUND_DEFS = {
     empty:   [220,  "sawtooth", 0.10, 0.30],
