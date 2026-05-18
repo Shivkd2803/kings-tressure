@@ -19,130 +19,96 @@ const getAudio = () => {
     return audioCtx;
 };
 
-// ─── Splash Pirate Tune ───
-let splashTuneNodes = [];
-let splashTuneTimeout = null;
-let splashTunePlaying = false;
-
+// ─── Splash Pirate Tune via OfflineAudioContext → Blob → <audio> ───
 const PIRATE_MELODY = [
-    // freq, duration (s) — sea shanty-style melody
-    [392, 0.3], [392, 0.15], [440, 0.3], [392, 0.3], [349, 0.3], [392, 0.6],
-    [330, 0.3], [330, 0.15], [370, 0.3], [330, 0.3], [294, 0.3], [330, 0.6],
-    [392, 0.3], [440, 0.3], [494, 0.3], [523, 0.6], [494, 0.3], [440, 0.3],
-    [392, 0.3], [349, 0.3], [330, 0.3], [294, 0.45], [262, 0.15], [294, 0.3],
-    [330, 0.3], [349, 0.3], [392, 0.6], [440, 0.3], [392, 0.3],
-    [349, 0.3], [330, 0.3], [294, 0.3], [262, 0.9],
+    [392,0.3],[392,0.15],[440,0.3],[392,0.3],[349,0.3],[392,0.6],
+    [330,0.3],[330,0.15],[370,0.3],[330,0.3],[294,0.3],[330,0.6],
+    [392,0.3],[440,0.3],[494,0.3],[523,0.6],[494,0.3],[440,0.3],
+    [392,0.3],[349,0.3],[330,0.3],[294,0.45],[262,0.15],[294,0.3],
+    [330,0.3],[349,0.3],[392,0.6],[440,0.3],[392,0.3],
+    [349,0.3],[330,0.3],[294,0.3],[262,0.9],
 ];
 
-const playPirateTune = () => {
-    if (muted || splashTunePlaying) return;
-    splashTunePlaying = true;
-    const ctx = getAudio();
+let splashAudio = null;
 
-    const playLoop = () => {
-        if (!splashTunePlaying) return;
-        let t = ctx.currentTime + 0.05;
-        splashTuneNodes = [];
+const buildAndPlayTune = () => {
+    const totalDur = PIRATE_MELODY.reduce((s,[,d])=>s+d,0);
+    const SR = 44100;
+    const offline = new OfflineAudioContext(1, Math.ceil((totalDur + 0.1) * SR), SR);
 
-        PIRATE_MELODY.forEach(([freq, dur]) => {
-            // Main melody oscillator
-            const o = ctx.createOscillator();
-            const g = ctx.createGain();
-            o.connect(g); g.connect(ctx.destination);
-            o.type = "triangle";
-            o.frequency.setValueAtTime(freq, t);
-            g.gain.setValueAtTime(0, t);
-            g.gain.linearRampToValueAtTime(0.18, t + 0.02);
-            g.gain.setValueAtTime(0.18, t + dur - 0.06);
-            g.gain.linearRampToValueAtTime(0, t + dur);
-            o.start(t); o.stop(t + dur);
-            splashTuneNodes.push(o);
+    let t = 0.05;
+    PIRATE_MELODY.forEach(([freq, dur]) => {
+        // melody
+        const o = offline.createOscillator();
+        const g = offline.createGain();
+        o.connect(g); g.connect(offline.destination);
+        o.type = "triangle";
+        o.frequency.value = freq;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.18, t + 0.02);
+        g.gain.setValueAtTime(0.18, t + dur - 0.06);
+        g.gain.linearRampToValueAtTime(0, t + dur);
+        o.start(t); o.stop(t + dur);
+        // harmony
+        const o2 = offline.createOscillator();
+        const g2 = offline.createGain();
+        o2.connect(g2); g2.connect(offline.destination);
+        o2.type = "sine";
+        o2.frequency.value = freq * 0.667;
+        g2.gain.setValueAtTime(0.06, t);
+        g2.gain.linearRampToValueAtTime(0, t + dur);
+        o2.start(t); o2.stop(t + dur);
+        t += dur;
+    });
 
-            // Harmony (a fifth below)
-            const o2 = ctx.createOscillator();
-            const g2 = ctx.createGain();
-            o2.connect(g2); g2.connect(ctx.destination);
-            o2.type = "sine";
-            o2.frequency.setValueAtTime(freq * 0.667, t);
-            g2.gain.setValueAtTime(0.06, t);
-            g2.gain.linearRampToValueAtTime(0, t + dur);
-            o2.start(t); o2.stop(t + dur);
-            splashTuneNodes.push(o2);
+    offline.startRendering().then(buffer => {
+        // Convert AudioBuffer → WAV blob
+        const pcm = buffer.getChannelData(0);
+        const wavBuf = new ArrayBuffer(44 + pcm.length * 2);
+        const view = new DataView(wavBuf);
+        const write = (o,s) => { for(let i=0;i<s.length;i++) view.setUint8(o+i, s.charCodeAt(i)); };
+        write(0,'RIFF'); view.setUint32(4, 36+pcm.length*2, true);
+        write(8,'WAVE'); write(12,'fmt ');
+        view.setUint32(16,16,true); view.setUint16(20,1,true); view.setUint16(22,1,true);
+        view.setUint32(24,SR,true); view.setUint32(28,SR*2,true);
+        view.setUint16(32,2,true); view.setUint16(34,16,true);
+        write(36,'data'); view.setUint32(40,pcm.length*2,true);
+        for(let i=0;i<pcm.length;i++){
+            const s = Math.max(-1,Math.min(1,pcm[i]));
+            view.setInt16(44+i*2, s<0?s*0x8000:s*0x7FFF, true);
+        }
+        const blob = new Blob([wavBuf], {type:'audio/wav'});
+        const url  = URL.createObjectURL(blob);
 
-            t += dur;
-        });
-
-        const totalDur = PIRATE_MELODY.reduce((s, [, d]) => s + d, 0);
-        splashTuneTimeout = setTimeout(() => {
-            if (splashTunePlaying) playLoop();
-        }, (totalDur + 0.2) * 1000);
-    };
-
-    playLoop();
+        splashAudio = new Audio(url);
+        splashAudio.loop = true;
+        splashAudio.volume = 0.25;
+        // Ready to play — will be triggered by Continue button click
+    });
 };
 
 const stopPirateTune = () => {
-    splashTunePlaying = false;
-    clearTimeout(splashTuneTimeout);
-    splashTuneNodes.forEach(o => { try { o.stop(); } catch (_) {} });
-    splashTuneNodes = [];
-};
-
-// ── Autoplay unlock: attempt immediately, retry on ANY interaction ──
-let tuneStarted = false;
-
-const tryStartTune = () => {
-    if (tuneStarted) return;
-    try {
-        const ctx = getAudio();
-        // Force resume (needed after page reload)
-        ctx.resume().then(() => {
-            if (!tuneStarted) {
-                tuneStarted = true;
-                playPirateTune();
-            }
-        }).catch(() => {});
-    } catch (_) {}
-};
-
-// Attempt on load
-tryStartTune();
-
-// Retry on any user gesture anywhere on the page
-const unlockHandler = () => {
-    tryStartTune();
-    if (tuneStarted) {
-        document.removeEventListener("pointerdown", unlockHandler, true);
-        document.removeEventListener("touchstart",  unlockHandler, true);
-        document.removeEventListener("keydown",     unlockHandler, true);
-        document.removeEventListener("click",       unlockHandler, true);
+    if (splashAudio) {
+        splashAudio.pause();
+        splashAudio.currentTime = 0;
     }
 };
-document.addEventListener("pointerdown", unlockHandler, true);
-document.addEventListener("touchstart",  unlockHandler, true);
-document.addEventListener("keydown",     unlockHandler, true);
-document.addEventListener("click",       unlockHandler, true);
 
-// Also restart tune any time splash screen becomes active
-const splashEl = document.getElementById("splash-screen");
-new MutationObserver(() => {
-    if (splashEl.classList.contains("active")) {
-        stopPirateTune();
-        tuneStarted = false;
-        tryStartTune();
-        // re-attach unlock in case audio context got suspended again
-        document.addEventListener("pointerdown", unlockHandler, true);
-        document.addEventListener("touchstart",  unlockHandler, true);
-        document.addEventListener("click",       unlockHandler, true);
-    }
-}).observe(splashEl, { attributes: true, attributeFilter: ["class"] });
+// Build tune on load (renders audio in background, ready to play instantly)
+buildAndPlayTune();
 
-// Stop tune + go to lobby on Continue
+// Continue button: play tune + go to lobby
 document.getElementById("splash-continue-btn").addEventListener("click", () => {
-    stopPirateTune();
-    tuneStarted = false;
+    // Play tune — this click IS the user gesture, so autoplay always works
+    if (splashAudio && pirateTuneOn) {
+        splashAudio.currentTime = 0;
+        splashAudio.play().catch(() => {});
+    }
     document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
     document.getElementById("lobby-screen").classList.add("active");
+    // Show lobby settings button
+    const lsBtn = document.getElementById("lobby-settings-btn");
+    if (lsBtn) lsBtn.style.display = "";
 });
 
 // Lookup table: type → [freq, waveform, gain, duration]
@@ -219,6 +185,13 @@ const genBoard = () => {
 const showScreen = id => {
     document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
+    // Show lobby settings btn only on lobby screen
+    const lsBtn = document.getElementById("lobby-settings-btn");
+    const lsPanel = document.getElementById("lobby-settings-panel");
+    if (lsBtn) {
+        lsBtn.style.display = id === "lobby-screen" ? "" : "none";
+        if (id !== "lobby-screen") lsPanel.classList.remove("show");
+    }
 };
 
 // ─── Timer ───
@@ -590,7 +563,85 @@ document.getElementById("start-btn").addEventListener("click", startGame);
 document.getElementById("back-btn").addEventListener("click", handleLeave);
 document.getElementById("btn-rm").addEventListener("click", handleRematch);
 document.getElementById("btn-lv").addEventListener("click", handleLeave);
-document.getElementById("mute-btn").addEventListener("click", () => {
-    muted = !muted;
-    document.getElementById("mute-btn").textContent = muted ? "🔇" : "🔊";
+
+// ─── Shared Settings State ───
+let pirateTuneOn = true;
+let gameVolumeOn = true;
+
+// Sync all tune/vol track visuals across both panels
+function syncTuneTracks() {
+    const cls = "t-track" + (pirateTuneOn ? " on" : "");
+    document.getElementById("tune-track").className = cls;
+    document.getElementById("game-tune-track").className = cls;
+}
+function syncVolTracks() {
+    const cls = "t-track" + (gameVolumeOn ? " on" : "");
+    document.getElementById("vol-track").className = cls;
+    document.getElementById("game-vol-track").className = cls;
+    muted = !gameVolumeOn;
+}
+
+// ─── In-Game Settings Panel ───
+const settingsPanel = document.getElementById("settings-panel");
+document.getElementById("settings-btn").addEventListener("click", e => {
+    e.stopPropagation();
+    settingsPanel.classList.toggle("show");
+});
+document.getElementById("settings-close-btn").addEventListener("click", () => {
+    settingsPanel.classList.remove("show");
+});
+
+// In-game Pirate Tune toggler
+document.getElementById("game-tune-toggle").addEventListener("click", () => {
+    pirateTuneOn = !pirateTuneOn;
+    syncTuneTracks();
+    if (splashAudio) {
+        if (pirateTuneOn) splashAudio.play().catch(() => {});
+        else splashAudio.pause();
+    }
+});
+
+// In-game Game Volume toggler
+document.getElementById("game-vol-toggle").addEventListener("click", () => {
+    gameVolumeOn = !gameVolumeOn;
+    syncVolTracks();
+});
+
+// Close in-game settings on outside click
+document.addEventListener("click", e => {
+    if (!settingsPanel.contains(e.target) && e.target.id !== "settings-btn") {
+        settingsPanel.classList.remove("show");
+    }
+});
+
+// ─── Lobby Settings Panel ───
+const lobbySettingsBtn   = document.getElementById("lobby-settings-btn");
+const lobbySettingsPanel = document.getElementById("lobby-settings-panel");
+
+lobbySettingsBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    lobbySettingsPanel.classList.toggle("show");
+});
+
+// Lobby Pirate Tune toggler
+document.getElementById("tune-toggle").addEventListener("click", () => {
+    pirateTuneOn = !pirateTuneOn;
+    syncTuneTracks();
+    if (splashAudio) {
+        if (pirateTuneOn) splashAudio.play().catch(() => {});
+        else splashAudio.pause();
+    }
+});
+
+// Lobby Game Volume toggler
+document.getElementById("vol-toggle").addEventListener("click", () => {
+    gameVolumeOn = !gameVolumeOn;
+    syncVolTracks();
+});
+
+// Close lobby settings on outside click
+document.addEventListener("click", e => {
+    if (!lobbySettingsPanel.contains(e.target) && e.target.id !== "lobby-settings-btn") {
+        lobbySettingsPanel.classList.remove("show");
+    }
 });
