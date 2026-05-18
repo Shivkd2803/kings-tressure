@@ -21,8 +21,7 @@
     <div class="screen active" id="splash-screen">
       <div class="splash-wrap">
         <img src="logo.png" class="splash-logo" alt="Find Treasure Pirate" />
-        <div class="logo-tagline">⚓ &nbsp; A TWO-PLAYER HIDDEN TILE GAME &nbsp; ⚓</div>
-        <div class="logo-icons">🗺️ ☠️ 🏴‍☠️ ⚔️ 🪙</div>
+
         <button class="start-btn splash-continue-btn" id="splash-continue-btn">⚓ &nbsp; CONTINUE</button>
       </div>
     </div>
@@ -215,46 +214,6 @@
       <button class="btn-lv" id="btn-lv">🚢 Leave Ship</button>
     </div>
   </div>
-
-  <style>
-    .lobby-center {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 32px 16px;
-    }
-    .lobby-center .setup-col {
-      width: 100%;
-      max-width: 420px;
-    }
-    .splash-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      gap: 18px;
-      padding: 32px 16px;
-      text-align: center;
-    }
-    .splash-logo {
-      width: min(340px, 80vw);
-      animation: splash-float 3s ease-in-out infinite;
-    }
-    @keyframes splash-float {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-10px); }
-    }
-    .splash-continue-btn {
-      margin-top: 18px;
-      animation: splash-pulse 2s ease-in-out infinite;
-    }
-    @keyframes splash-pulse {
-      0%, 100% { box-shadow: 0 0 18px rgba(255,215,0,.35); }
-      50%       { box-shadow: 0 0 38px rgba(255,215,0,.75); }
-    }
-  </style>
   <script>
     document.getElementById("splash-continue-btn").addEventListener("click", () => {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
