@@ -1065,8 +1065,9 @@ body::before {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, .88);
-    backdrop-filter: blur(14px);
+    background: rgba(0, 0, 0, .45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     z-index: 200;
     align-items: center;
     justify-content: center;
@@ -1077,38 +1078,40 @@ body::before {
 }
 
 .w-modal {
-    background: linear-gradient(135deg, #0D1B3E, #0a1428);
-    border: 1px solid rgba(255, 215, 0, .5);
+    background: rgba(200, 220, 255, 0.15);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(180, 210, 255, 0.35);
     border-radius: 28px;
     padding: 40px 32px;
     max-width: 420px;
     width: 92%;
     text-align: center;
-    box-shadow: 0 0 80px rgba(255, 215, 0, .28);
+    box-shadow: 0 0 80px rgba(255, 215, 0, .2), inset 0 1px 0 rgba(255,255,255,.07);
     animation: winner-bounce .6s cubic-bezier(.34, 1.56, .64, 1) forwards;
 }
 
 .w-trophy {
     font-size: 72px;
     margin-bottom: 12px;
-    filter: drop-shadow(0 0 22px #FFD700)
 }
 
 .w-title {
     font-family: 'Cinzel', serif;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 900;
-    background: linear-gradient(135deg, #FFE44D, #FFD700, #FFA500);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: marquee-glow 2s infinite;
+    color: #ffffff;
+    letter-spacing: 1.5px;
+    line-height: 1.3;
     margin-bottom: 6px;
+    text-shadow: none;
 }
 
 .w-sub {
-    color: rgba(255, 255, 255, .42);
-    font-size: 14px;
+    color: rgba(255, 255, 255, .55);
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     margin-bottom: 22px
 }
 
@@ -1120,16 +1123,19 @@ body::before {
 }
 
 .w-sc {
-    background: rgba(255, 255, 255, .04);
-    border: 1px solid rgba(255, 255, 255, .08);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, .13);
     border-radius: 14px;
     padding: 14px 20px;
-    min-width: 108px
+    min-width: 108px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 0 60px rgba(255, 165, 0, .07), inset 0 1px 0 rgba(255, 255, 255, .07);
 }
 
 .w-sc.win {
-    background: rgba(255, 215, 0, .12);
-    border-color: rgba(255, 215, 0, .5)
+    background: rgba(255, 215, 0, .18);
+    border-color: rgba(255, 215, 0, .6)
 }
 
 .w-sc-nm {
@@ -1214,41 +1220,69 @@ body::before {
 }
 
 
-/* ── iPad Portrait (768–1024px) ── */
-@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait),
-       (min-width: 768px) and (max-width: 900px) {
+/* ── iPad Portrait & Tablet (768–1100px) ── */
+@media (min-width: 768px) and (max-width: 1100px) {
 
     #game-screen {
-        max-width: 100%;
-        padding: 0 16px 24px;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 12px 24px;
     }
 
     .board-area {
-        grid-template-columns: 160px 1fr 160px;
-        gap: 12px;
+        display: grid !important;
+        grid-template-columns: 150px 1fr 150px !important;
+        gap: 10px !important;
+        width: 100%;
+    }
+
+    .side-panel {
+        flex-direction: column;
     }
 
     .side-panel > * {
         min-width: unset;
+        flex: unset;
     }
 
     #board {
-        max-width: 100%;
-        gap: 6px;
-        padding: 12px;
+        max-width: 100% !important;
+        width: 100%;
+        gap: 5px;
+        padding: 10px;
     }
 
     .tile {
-        min-height: 70px;
-        font-size: 20px;
+        min-height: 65px;
+        font-size: 18px;
+    }
+
+    .tile.treasure {
+        font-size: 28px;
+    }
+
+    .g-title-top {
+        font-size: 14px;
+        letter-spacing: 4px;
+    }
+
+    .g-title-top {
+        font-size: 16px;
+        letter-spacing: 5px;
+    }
+
+    .g-title-main {
+        font-size: 38px !important;
     }
 
     .players-row {
-        gap: 8px;
+        gap: 12px;
+        margin-top: 18px;
+        margin-bottom: 18px;
     }
 
     .pcard {
-        padding: 10px 12px;
+        padding: 14px 18px;
     }
 
     .av {
@@ -1266,17 +1300,18 @@ body::before {
     }
 
     .stat-big {
-        font-size: 32px;
+        font-size: 30px;
     }
 
     .stat-card-lbl {
         font-size: 9px;
+        letter-spacing: 2px;
     }
 
     .taunt-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 18px;
+        width: 36px;
+        height: 36px;
+        font-size: 17px;
     }
 
     .bottom-bar {
@@ -1284,61 +1319,172 @@ body::before {
     }
 
     .bb-section {
-        padding: 10px 12px;
+        padding: 10px 10px;
         gap: 8px;
+    }
+
+    .bb-title {
+        font-size: 11px;
+    }
+
+    .bb-val, .bb-match-val {
+        font-size: 15px;
+    }
+
+    .info-card {
+        font-size: 11px;
+        padding: 10px;
     }
 }
 
 /* Responsive */
 @media(max-width:767px) {
+
+    #game-screen {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 8px 16px;
+        overflow-x: hidden;
+    }
+
     .lobby-grid {
         grid-template-columns: 1fr
     }
 
+    /* Stack board area: hide side panels, center board */
     .board-area {
-        grid-template-columns: 1fr
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
     }
 
     .side-panel {
-        flex-direction: row;
-        flex-wrap: wrap
-    }
-
-    .side-panel>* {
-        flex: 1;
-        min-width: 140px
-    }
-
-    #board {
-        max-width: 420px
-    }
-
-    .bottom-bar {
-        flex-wrap: wrap
+        display: none !important;
     }
 
     .board-col {
-        width: 100%
-    }
-}
-
-@media(max-width:540px) {
-    .tile {
-        min-height: 56px;
-        font-size: 18px
-    }
-
-    .tile.treasure {
-        font-size: 28px
-    }
-
-    .g-title-main {
-        font-size: 18px
+        width: 100%;
+        max-width: 100%;
     }
 
     #board {
-        padding: 10px;
-        gap: 5px
+        width: 100%;
+        max-width: 100%;
+        padding: 8px;
+        gap: 5px;
+    }
+
+    .tile {
+        min-height: 58px;
+        font-size: 20px;
+    }
+
+    .tile.treasure {
+        font-size: 28px;
+    }
+
+    /* Players row compact */
+    .players-row {
+        grid-template-columns: 1fr 44px 1fr;
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .pcard {
+        padding: 8px 10px;
+        gap: 8px;
+        border-radius: 12px;
+    }
+
+    .av {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .pname {
+        font-size: 12px;
+    }
+
+    .pscore {
+        font-size: 11px;
+    }
+
+    .vs-circle {
+        width: 36px;
+        height: 36px;
+        font-size: 11px;
+    }
+
+    /* Title */
+    .g-title-top {
+        font-size: 9px;
+        letter-spacing: 3px;
+    }
+
+    .g-title-main {
+        font-size: 16px;
+    }
+
+    /* Turn pill */
+    #turn-pill {
+        font-size: 12px;
+        padding: 6px 16px;
+    }
+
+    /* Bottom bar */
+    .bottom-bar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    .bb-section {
+        padding: 8px 10px;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .bb-title {
+        font-size: 10px;
+    }
+
+    .bb-val, .bb-match-val {
+        font-size: 13px;
+    }
+
+    /* Icon buttons */
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    /* Danger banner */
+    #danger-banner {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}
+
+@media(max-width:400px) {
+    .tile {
+        min-height: 48px;
+        font-size: 16px;
+    }
+
+    #board {
+        gap: 4px;
+        padding: 6px;
+    }
+
+    .g-title-main {
+        font-size: 13px;
+    }
+
+    .pname {
+        font-size: 11px;
     }
 }
 
