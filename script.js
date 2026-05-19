@@ -257,7 +257,7 @@ const updateCards = () => {
     [1, 2].forEach(p => {
         const card = document.getElementById(`p${p}-card`);
         card.className = `pcard p${p}${(state.cp === p && !state.winner) ? " active" : ""}`;
-        document.getElementById(`p${p}-sc`).textContent = `🏆 ${state.scores[p]}`;
+        document.getElementById(`p${p}-sc`).innerHTML = `<img src="tressure.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:3px">${state.scores[p]}`;
         const sb = document.getElementById(`p${p}-stk`);
         if (state.streaks[p] >= 2) {
             sb.style.display  = "flex";
@@ -334,7 +334,7 @@ const buildBoard = () => {
         for (let i = 0; i < TOTAL; i++) {
             const div = document.createElement("div");
             div.className = "tile";
-            div.innerHTML = "<span>?</span>";
+            div.innerHTML = `<img src="skull.png" class="tile-skull" alt="?" />`;
             div.addEventListener("click", () => handleTile(i));
             tileEls.push(div);
             boardFrag.appendChild(div);
@@ -344,7 +344,7 @@ const buildBoard = () => {
         // Subsequent rounds: just reset appearance
         tileEls.forEach(div => {
             div.className = "tile";
-            div.innerHTML = "<span>?</span>";
+            div.innerHTML = `<img src="skull.png" class="tile-skull" alt="?" />`;
         });
     }
 
@@ -392,7 +392,7 @@ const handleTile = id => {
 
     if (tile.hasTreasure) {
         tile.el.className = "tile treasure";
-        tile.el.innerHTML = `<span style="filter:drop-shadow(0 0 8px #FFD700)">🏆</span>`;
+        tile.el.innerHTML = `<img src="tressure.png" class="tile-treasure" alt="treasure" style="filter:drop-shadow(0 0 12px #FFD700)" />`;
         playSound("treasure");
         fireParticles();
         setTimeout(() => {
@@ -428,21 +428,27 @@ const showWinner = () => {
     const target    = Math.ceil(state.matchMode / 2);
     const matchOver = state.scores[1] >= target || state.scores[2] >= target;
     const mw        = state.scores[1] >= target ? 1 : 2;
+    const roundWinner = state.winner;
 
     document.getElementById("w-title").textContent = matchOver
         ? `${state.names[mw]} WINS THE MATCH!`
-        : `${state.names[state.winner]} WINS THE ROUND!`;
+        : `${state.names[roundWinner]} WINS THE ROUND!`;
     document.getElementById("w-sub").textContent = matchOver
         ? "🎉 Champion of the Seven Seas!"
         : "Found the hidden treasure chest!";
 
-    document.getElementById("w-scores").innerHTML = [1, 2].map(p =>
-        `<div class="w-sc${p === state.winner ? " win" : ""}">
+    const avatars = { 1: "player_1.jpg", 2: "player_2.jpg" };
+    const colors  = { 1: "#3B82F6", 2: "#EF4444" };
+
+    document.getElementById("w-scores").innerHTML = [1, 2].map(p => {
+        const isWinner = p === state.winner;
+        return `<div class="w-sc${isWinner ? " win" : ""}">
+            <img src="${avatars[p]}" class="w-sc-av" style="border-color:${isWinner ? colors[p] : 'rgba(255,255,255,.2)'}" />
             <div class="w-sc-nm">${state.names[p]}</div>
-            <div class="w-sc-n" style="color:${p === state.winner ? "#FFD700" : "white"}">${state.scores[p]}</div>
+            <div class="w-sc-n" style="color:${isWinner ? "#FFD700" : "white"}">${state.scores[p]}</div>
             ${state.streaks[p] >= 2 ? `<div style="font-size:11px;color:#FF6B35">🔥 ${state.streaks[p]} streak</div>` : ""}
-        </div>`
-    ).join("");
+        </div>`;
+    }).join("");
 
     const wp = document.getElementById("w-pips");
     if (state.matchMode > 1) {
@@ -587,10 +593,6 @@ document.getElementById("settings-btn").addEventListener("click", e => {
     e.stopPropagation();
     settingsPanel.classList.toggle("show");
 });
-document.getElementById("settings-close-btn").addEventListener("click", () => {
-    settingsPanel.classList.remove("show");
-});
-
 // In-game Pirate Tune toggler
 document.getElementById("game-tune-toggle").addEventListener("click", () => {
     pirateTuneOn = !pirateTuneOn;
@@ -609,7 +611,7 @@ document.getElementById("game-vol-toggle").addEventListener("click", () => {
 
 // Close in-game settings on outside click
 document.addEventListener("click", e => {
-    if (!settingsPanel.contains(e.target) && e.target.id !== "settings-btn") {
+    if (!e.target.closest("#settings-panel") && !e.target.closest("#settings-btn")) {
         settingsPanel.classList.remove("show");
     }
 });
@@ -617,10 +619,19 @@ document.addEventListener("click", e => {
 // ─── Lobby Settings Panel ───
 const lobbySettingsBtn   = document.getElementById("lobby-settings-btn");
 const lobbySettingsPanel = document.getElementById("lobby-settings-panel");
+let lobbyBtnJustClicked  = false;
 
-lobbySettingsBtn.addEventListener("click", e => {
-    e.stopPropagation();
+lobbySettingsBtn.addEventListener("click", () => {
+    lobbyBtnJustClicked = true;
     lobbySettingsPanel.classList.toggle("show");
+    setTimeout(() => { lobbyBtnJustClicked = false; }, 0);
+});
+
+// Close lobby settings on outside click
+document.addEventListener("click", () => {
+    if (!lobbyBtnJustClicked) {
+        lobbySettingsPanel.classList.remove("show");
+    }
 });
 
 // Lobby Pirate Tune toggler
@@ -637,11 +648,4 @@ document.getElementById("tune-toggle").addEventListener("click", () => {
 document.getElementById("vol-toggle").addEventListener("click", () => {
     gameVolumeOn = !gameVolumeOn;
     syncVolTracks();
-});
-
-// Close lobby settings on outside click
-document.addEventListener("click", e => {
-    if (!lobbySettingsPanel.contains(e.target) && e.target.id !== "lobby-settings-btn") {
-        lobbySettingsPanel.classList.remove("show");
-    }
 });
