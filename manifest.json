@@ -1,0 +1,14 @@
+{
+  "name": "Find Treasure Pirate",
+  "short_name": "Treasure Pirate",
+  "description": "A two-player pirate treasure hunting game",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#FFD700",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
