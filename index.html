@@ -29,8 +29,8 @@
     <!-- ═══════ LOBBY ═══════ -->
     <div class="screen" id="lobby-screen">
 
-      <!-- Lobby top-right settings button (mirrors game screen) -->
-      <button class="icon-btn lobby-icon-settings-btn" id="lobby-settings-btn" style="display:none">⚙️</button>
+      <!-- Lobby top-right settings button (identical to game screen) -->
+      <div class="icon-btn lobby-icon-settings-btn" id="lobby-settings-btn">⚙️</div>
       <div id="lobby-settings-panel">
         <div class="settings-title">⚙️ Settings</div>
         <!-- Pirate Tune toggle -->
@@ -142,8 +142,6 @@
             <div class="t-knob"></div>
           </div>
         </div>
-        <div class="settings-divider"></div>
-        <button class="settings-item settings-close-btn" id="settings-close-btn">✕ Close</button>
       </div>
 
       <!-- Timer -->
@@ -160,7 +158,7 @@
           </div>
           <div class="pinfo">
             <div class="pname" id="p1-nm">Captain Blue</div>
-            <div class="pscore" id="p1-sc">🏆 0</div>
+            <div class="pscore" id="p1-sc"><img src="tressure.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:3px">0</div>
             <div class="ptimer" id="p1-tm"></div>
           </div>
         </div>
@@ -172,7 +170,7 @@
           </div>
           <div class="pinfo right">
             <div class="pname" id="p2-nm">Captain Red</div>
-            <div class="pscore" id="p2-sc">🏆 0</div>
+            <div class="pscore" id="p2-sc"><img src="tressure.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:3px">0</div>
             <div class="ptimer" id="p2-tm"></div>
           </div>
         </div>
@@ -248,14 +246,14 @@
             <div class="stat-big" id="rnd-disp">1</div>
             <div class="stat-sub">CURRENT</div>
             <div style="margin-top:12px">
-              <div class="chest-orb">🏆</div>
+              <div class="chest-orb"><img src="tressure.png" style="width:48px;height:48px;object-fit:contain" /></div>
             </div>
           </div>
           <div class="info-card">
             <strong>How to play:</strong><br>
             Take turns flipping tiles.<br>
             ☠️ Empty = pass turn<br>
-            🏆 Treasure = score a point!
+            <img src="tressure.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle"> Treasure = score a point!
           </div>
         </div>
       </div>
@@ -266,11 +264,11 @@
   <!-- Winner modal -->
   <div id="winner-ov">
     <div class="w-modal">
-      <div class="w-trophy">🏆</div>
+      <div class="w-trophy"><img src="tressure.png" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 0 16px #FFD700)" /></div>
       <div class="w-title" id="w-title">WINNER!</div>
       <div class="w-sub" id="w-sub">Found the hidden treasure!</div>
       <div class="w-scores" id="w-scores"></div>
-      <div id="w-pips" style="display:flex;justify-content:center;gap:6px;margin-bottom:18px"></div>
+      <div id="w-pips" style="display:flex;justify-content:center;gap:6px;margin-bottom:12px"></div>
       <button class="btn-rm" id="btn-rm">⚔️ NEXT ROUND</button>
       <button class="btn-lv" id="btn-lv">🚢 Leave Ship</button>
     </div>
