@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find Treasure Pirate</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="stars" id="stars"></div>
+  <div id="particles"></div>
+  <div id="taunt-ov"></div>
+  <div id="app">
+
+    <!-- ═══════ SPLASH ═══════ -->
+    <div class="screen active" id="splash-screen">
+      <div class="splash-wrap">
+        <img src="logo.png" class="splash-logo" alt="Find Treasure Pirate" />
+
+        <button class="start-btn splash-continue-btn" id="splash-continue-btn">⚓ &nbsp; CONTINUE</button>
+      </div>
+    </div>
+
+    <!-- ═══════ LOBBY ═══════ -->
+    <div class="screen" id="lobby-screen">
+
+      <!-- Lobby top-right settings button (identical to game screen) -->
+      <div class="icon-btn lobby-icon-settings-btn" id="lobby-settings-btn">⚙️</div>
+      <div id="lobby-settings-panel">
+        <div class="settings-title">⚙️ Settings</div>
+        <!-- Pirate Tune toggle -->
+        <div class="toggle-row" id="tune-toggle">
+          <div>
+            <div class="toggle-lbl">🎵 Pirate Tune</div>
+            <div class="toggle-desc">Background music</div>
+          </div>
+          <div class="t-track on" id="tune-track">
+            <div class="t-knob"></div>
+          </div>
+        </div>
+        <div class="settings-divider"></div>
+        <!-- Game Volume toggle -->
+        <div class="toggle-row" id="vol-toggle">
+          <div>
+            <div class="toggle-lbl">🔊 Game Volume</div>
+            <div class="toggle-desc">Sound effects</div>
+          </div>
+          <div class="t-track on" id="vol-track">
+            <div class="t-knob"></div>
+          </div>
+        </div>
+      </div>
+      <div class="lobby-center">
+        <div class="setup-col">
+          <div style="text-align:center">
+            <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:rgba(255,215,0,.65)">⚔️
+              &nbsp; CREW SETUP &nbsp; ⚔️</div>
+          </div>
+
+          <div class="sec-block">
+            <div class="sec-label">⚓ Pirate Names</div>
+            <div class="player-input-row">
+              <img src="player_1.jpg" class="lobby-av p1-av" alt="Player 1" />
+              <input class="p-input i1" id="p1-name" value="Captain Blue" maxlength="14" placeholder="🔵 Player 1" />
+            </div>
+            <div class="player-input-row" style="margin-top:8px">
+              <img src="player_2.jpg" class="lobby-av p2-av" alt="Player 2" />
+              <input class="p-input i2" id="p2-name" value="Captain Red" maxlength="14" placeholder="🔴 Player 2" />
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="sec-block">
+            <div class="sec-label">⚔️ Match Mode</div>
+            <div class="mode-row">
+              <button class="mode-btn" data-m="1">Single</button>
+              <button class="mode-btn on" data-m="3">Best of 3</button>
+              <button class="mode-btn" data-m="5">Best of 5</button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="sec-block">
+            <div class="sec-label">🎮 Options</div>
+            <div class="toggle-row" id="tmr-toggle">
+              <div>
+                <div class="toggle-lbl">⏱ Turn Timer (15s)</div>
+                <div class="toggle-desc">Skips turn on timeout</div>
+              </div>
+              <div class="t-track on" id="tmr-track">
+                <div class="t-knob"></div>
+              </div>
+            </div>
+          </div>
+
+          <button class="start-btn" id="start-btn">⚔️ &nbsp; SET SAIL!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ GAME ═══════ -->
+    <div class="screen" id="game-screen">
+
+      <!-- Top bar -->
+      <div class="g-topbar">
+        <button class="icon-btn" id="back-btn">‹</button>
+        <div class="g-title-wrap">
+          <div class="g-title-top">✦ &nbsp; FIND THE &nbsp; ✦</div>
+          <div class="g-title-main">TREASURE PIRATE 🏴‍☠️</div>
+        </div>
+        <button class="icon-btn" id="settings-btn">⚙️</button>
+      </div>
+
+      <!-- Settings Panel -->
+      <div id="settings-panel">
+        <div class="settings-title">⚙️ Settings</div>
+        <!-- Pirate Tune toggle -->
+        <div class="toggle-row" id="game-tune-toggle">
+          <div>
+            <div class="toggle-lbl">🎵 Pirate Tune</div>
+            <div class="toggle-desc">Background music</div>
+          </div>
+          <div class="t-track on" id="game-tune-track">
+            <div class="t-knob"></div>
+          </div>
+        </div>
+        <div class="settings-divider"></div>
+        <!-- Game Volume toggle -->
+        <div class="toggle-row" id="game-vol-toggle">
+          <div>
+            <div class="toggle-lbl">🔊 Game Volume</div>
+            <div class="toggle-desc">Sound effects</div>
+          </div>
+          <div class="t-track on" id="game-vol-track">
+            <div class="t-knob"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timer -->
+      <div id="timer-wrap">
+        <div id="timer-fill" style="width:100%;background:#3B82F6"></div>
+      </div>
+
+      <!-- Players -->
+      <div class="players-row">
+        <div class="pcard p1 active" id="p1-card">
+          <div class="av-wrap">
+            <div class="av" id="p1-av"><img src="player_1.jpg" alt="Player 1" /></div>
+            <div class="streak-bdg" id="p1-stk" style="display:none"></div>
+          </div>
+          <div class="pinfo">
+            <div class="pname" id="p1-nm">Captain Blue</div>
+            <div class="pscore" id="p1-sc"><img src="tressure.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:3px">0</div>
+            <div class="ptimer" id="p1-tm"></div>
+          </div>
+        </div>
+        <div class="vs-circle">VS</div>
+        <div class="pcard p2" id="p2-card">
+          <div class="av-wrap">
+            <div class="av" id="p2-av"><img src="player_2.jpg" alt="Player 2" /></div>
+            <div class="streak-bdg" id="p2-stk" style="display:none"></div>
+          </div>
+          <div class="pinfo right">
+            <div class="pname" id="p2-nm">Captain Red</div>
+            <div class="pscore" id="p2-sc"><img src="tressure.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:3px">0</div>
+            <div class="ptimer" id="p2-tm"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pips + round -->
+      <div class="mpips" id="mpips" style="display:none">
+        <span class="mpips-lbl" id="mpips-lbl"></span>
+        <div id="pips-wrap" style="display:flex;gap:5px"></div>
+      </div>
+
+      <!-- Turn pill -->
+      <div class="turn-pill-wrap">
+        <div id="turn-pill">● Captain Blue's Turn</div>
+      </div>
+
+      <!-- Danger -->
+      <div id="danger-banner">☠️ Only <span id="dnr-cnt">5</span> tile(s) left — treasure is close!</div>
+
+      <!-- Board area: left | board | right -->
+      <div class="board-area">
+
+        <!-- Left -->
+        <div class="side-panel">
+          <div class="stat-card">
+            <div class="stat-card-lbl">🗺️ Tiles Left</div>
+            <div class="stat-big" id="tiles-disp">25</div>
+            <div class="stat-sub">UNEXPLORED</div>
+          </div>
+          <div class="taunt-card">
+            <div class="taunt-lbl">TAUNT OPPONENT</div>
+            <div class="taunt-btns" id="taunt-btns"></div>
+          </div>
+        </div>
+
+        <!-- Board -->
+        <div class="board-col">
+          <div id="board"></div>
+
+          <!-- Bottom bar (matches screenshot layout) -->
+          <div class="bottom-bar">
+            <div class="bb-section">
+              <div style="font-size:26px">🗺️</div>
+              <div class="bb-text">
+                <div class="bb-title">Find the treasure</div>
+                <div style="font-size:12px;color:rgba(255,255,255,.3)">Tap any tile to start</div>
+              </div>
+            </div>
+            <div class="bb-section center">
+              <div class="bb-chest">🏴‍☠️</div>
+            </div>
+            <div class="bb-section">
+              <div style="font-size:22px">⬛</div>
+              <div class="bb-text">
+                <div class="bb-title">TILES LEFT</div>
+                <div class="bb-val" id="bb-tiles">25</div>
+              </div>
+            </div>
+            <div class="bb-section">
+              <div style="font-size:22px">⏳</div>
+              <div class="bb-text">
+                <div class="bb-title">MATCH</div>
+                <div class="bb-match-val" id="bb-match">Best of 3</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="side-panel">
+          <div class="stat-card">
+            <div class="stat-card-lbl">🪙 Round</div>
+            <div class="stat-big" id="rnd-disp">1</div>
+            <div class="stat-sub">CURRENT</div>
+            <div style="margin-top:12px">
+              <div class="chest-orb"><img src="tressure.png" style="width:48px;height:48px;object-fit:contain" /></div>
+            </div>
+          </div>
+          <div class="info-card">
+            <strong>How to play:</strong><br>
+            Take turns flipping tiles.<br>
+            ☠️ Empty = pass turn<br>
+            <img src="tressure.png" style="width:16px;height:16px;object-fit:contain;vertical-align:middle"> Treasure = score a point!
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Winner modal -->
+  <div id="winner-ov">
+    <div class="w-modal">
+      <div class="w-trophy"><img src="tressure.png" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 0 16px #FFD700)" /></div>
+      <div class="w-title" id="w-title">WINNER!</div>
+      <div class="w-sub" id="w-sub">Found the hidden treasure!</div>
+      <div class="w-scores" id="w-scores"></div>
+      <div id="w-pips" style="display:flex;justify-content:center;gap:6px;margin-bottom:12px"></div>
+      <button class="btn-rm" id="btn-rm">⚔️ NEXT ROUND</button>
+      <button class="btn-lv" id="btn-lv">🚢 Leave Ship</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>
